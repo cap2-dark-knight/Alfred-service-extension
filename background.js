@@ -28,7 +28,13 @@ function startAlfredService() {
       });
     } else {
       // Session found
-      getUserInfo();
+      getUserInfo((user) =>
+        showNotification(
+          'Welcome to Alfred',
+          `Hi ${user.first_name}!`,
+          (nid) => {}
+        )
+      );
     }
   });
 }
@@ -49,8 +55,9 @@ function getUserInfo(callback) {
   xmlHttp.onreadystatechange = () => {
     if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
       const response = JSON.parse(xmlHttp.responseText);
-      console.log(response.user);
-      // callback(response.user);
+      const user = response['user'];
+      callback(user);
+      console.log(user);
     }
   };
   xmlHttp.open('GET', URL, true);
@@ -111,7 +118,7 @@ function showNotification(title, message, onClick) {
     type: 'basic',
     title,
     message,
-    iconUrl: 'images/alfred_128.png',
+    iconUrl: 'images/alfred_w_128.png',
   };
   chrome.notifications.create(id, options, (nid) => {
     id = nid;
