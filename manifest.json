@@ -1,0 +1,27 @@
+{
+  "name": "Alfred",
+  "version": "1.0",
+  "description": "You do your stuff, let Alfred notify you!",
+  "permissions": [
+    "alarms",
+    "cookies",
+    "notifications",
+    "tabs",
+    "webRequest",
+    "http://localhost/*"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": true
+  },
+  "options_page": "options.html",
+  "icons": {
+    "16": "images/alfred_w_16.png",
+    "32": "images/alfred_w_32.png",
+    "48": "images/alfred_w_48.png",
+    "128": "images/alfred_w_128.png"
+  },
+  "manifest_version": 2
+}
