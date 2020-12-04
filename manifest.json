@@ -1,5 +1,5 @@
 {
-  "name": "Alfred",
+  "name": "Alfred Notification Service",
   "version": "1.0",
   "description": "You do your stuff, let Alfred notify you!",
   "permissions": [
