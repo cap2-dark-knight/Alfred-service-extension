@@ -26,7 +26,10 @@ chrome.webRequest.onCompleted.addListener(
     }
   },
   {
-    urls: ['http://localhost:4200/common/accounts/signin'],
+    urls: [
+      'http://localhost:4200/common/accounts/signin',
+      'http://localhost:4200/common/alert_time',
+    ],
   }
 );
 
@@ -52,19 +55,23 @@ function startAlfredService() {
       // Session found
       console.log('[startAlfredService] Session found!');
       getUserInfo((user) => {
-        // Get Date object of nearest alert time
+        // Find next alert hour
         const now = new Date();
         const alertTimes = user.alert_times.sort((x, y) => x - y);
         let nextAlertHour = alertTimes.findIndex((t) => t > now.getHours());
-        if (nextAlertHour === -1) {
-          nextAlertHour = alertTimes[0];
-        }
+
+        // Make a Date object of next alert hour
         const next = new Date();
-        // next.setHours(nextAlertHour);
-        // next.setMinutes(0);
-        // next.setSeconds(0);
-        // next.setMilliseconds(0);
-        next.setSeconds(now.getSeconds() + 10);
+        next.setMinutes(0);
+        next.setSeconds(0);
+        next.setMilliseconds(0);
+        if (nextAlertHour !== -1) {
+          // Next alarm time is tomorrow
+          nextAlertHour = alertTimes[0];
+          next.setDate(now.getDate() + 1);
+        }
+        next.setHours(nextAlertHour);
+
         console.log(`[startAlfredService] Creating next alarm`);
         createAlarm(next, () => {
           checkSession((hasSession) => {
@@ -202,9 +209,7 @@ function createAlarm(time, callback) {
     chrome.alarms.create(ALARM_NAME.concat(alarmIteration++), {
       when: time.getTime(),
     });
-    console.log(
-      `[createAlarm] Alarm created to fire at: ${time.toTimeString()}`
-    );
+    console.log(`[createAlarm] Alarm created to fire at: ${time.toString()}`);
     chrome.alarms.onAlarm.addListener((alarm) => {
       console.log(`[createAlarm] Alarm fired:`, alarm);
       if (alarm.scheduledTime === lastAlarmTime) {
