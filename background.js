@@ -58,19 +58,23 @@ function startAlfredService() {
         // Find next alert hour
         const now = new Date();
         const alertTimes = user.alert_times.sort((x, y) => x - y);
-        let nextAlertHour = alertTimes.findIndex((t) => t > now.getHours());
+        let nextAlertIdx = alertTimes.findIndex((t) => t > now.getHours());
+        let nextAlertTime;
 
         // Make a Date object of next alert hour
         const next = new Date();
         next.setMinutes(0);
         next.setSeconds(0);
         next.setMilliseconds(0);
-        if (nextAlertHour !== -1) {
+        if (nextAlertIdx === -1) {
           // Next alarm time is tomorrow
-          nextAlertHour = alertTimes[0];
+          nextAlertTime = alertTimes[0];
           next.setDate(now.getDate() + 1);
         }
-        next.setHours(nextAlertHour);
+        else {
+          nextAlertTime = alertTimes[nextAlertIdx];
+        }
+        next.setHours(nextAlertTime);
 
         console.log(`[startAlfredService] Creating next alarm`);
         createAlarm(next, () => {
