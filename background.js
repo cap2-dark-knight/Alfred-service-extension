@@ -2,6 +2,7 @@
 
 const ALARM_NAME = 'ALFRED_ALARM';
 const NOTIF_ID = 'ALFRED_NOTIF';
+const API = 'https://fred.cf';
 
 let loginNotifShown = false;
 let lastAlarmTime = 0;
@@ -26,10 +27,7 @@ chrome.webRequest.onCompleted.addListener(
     }
   },
   {
-    urls: [
-      'http://localhost:4200/common/accounts/signin',
-      'http://localhost:4200/common/alert_time',
-    ],
+    urls: [`${API}/common/accounts/signin`, `${API}/common/alert_time`],
   }
 );
 
@@ -70,8 +68,7 @@ function startAlfredService() {
           // Next alarm time is tomorrow
           nextAlertTime = alertTimes[0];
           next.setDate(now.getDate() + 1);
-        }
-        else {
+        } else {
           nextAlertTime = alertTimes[nextAlertIdx];
         }
         next.setHours(nextAlertTime);
@@ -113,7 +110,7 @@ function startAlfredService() {
  */
 function getUserInfo(callback) {
   console.log('[getUserInfo] Start');
-  const URL = 'http://localhost:8000/common/accounts/user';
+  const URL = `${API}/common/accounts/user`;
   const xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = () => {
     if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
@@ -139,9 +136,9 @@ function getUserInfo(callback) {
  */
 function checkSession(callback) {
   console.log('[checkSession] Start');
-  chrome.cookies.getAll({ name: 'sessionid' }, (cookies) => {
+  chrome.cookies.get({ name: 'sessionid', url: API }, (cookie) => {
     console.log('[checkSession] Callback');
-    callback(cookies.length !== 0);
+    callback(cookie !== null);
   });
 }
 
@@ -156,7 +153,7 @@ function checkSession(callback) {
  */
 function openAlfred() {
   console.log('[openAlfred] Opening alfred');
-  const url = 'http://localhost:4200';
+  const url = 'https://al.fred.cf';
   chrome.tabs.create({ url }, (tab) => {});
 }
 

@@ -8,7 +8,8 @@
     "notifications",
     "tabs",
     "webRequest",
-    "http://localhost/*"
+    "https://fred.cf/*",
+    "https://al.fred.cf/*"
   ],
   "background": {
     "scripts": [
