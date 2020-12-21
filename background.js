@@ -44,7 +44,7 @@ function startAlfredService() {
         // No session, open Alfred page
         showNotification(
           'Alfred',
-          'Login to Alfred',
+          'Alfred에 로그인 하실려면 클릭하세요',
           () => (loginNotifShown = true),
           () => openAlfred()
         );
